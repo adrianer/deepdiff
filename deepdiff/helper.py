@@ -20,11 +20,15 @@ pypy3 = py3 and hasattr(sys, "pypy_translation_info")
 if py3:  # pragma: no cover
     from builtins import int
     strings = (str, bytes)  # which are both basestring
+    unicode_type = str
+    bytes_type = bytes
     numbers = (int, float, complex, datetime.datetime, datetime.date, Decimal)
     items = 'items'
 else:  # pragma: no cover
     int = int
     strings = (str, unicode)
+    unicode_type = unicode
+    bytes_type = str
     numbers = (int, float, long, complex, datetime.datetime, datetime.date,
                Decimal)
 
@@ -57,6 +61,21 @@ class ListItemRemovedOrAdded(object):  # pragma: no cover
     """Class of conditions to be checked"""
     pass
 
+
+class NotPresent(object):  # pragma: no cover
+    """
+    In a change tree, this indicated that a previously existing object has been removed -- or will only be added
+    in the future.
+    We previously used None for this but this caused problem when users actually added and removed None. Srsly guys? :D
+    """
+    def __repr__(self):
+        return "Not Present"
+
+    def __str__(self):
+        return self.__repr__()
+
+
+notpresent = NotPresent()
 
 WARNING_NUM = 0
 
